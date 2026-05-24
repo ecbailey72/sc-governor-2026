@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SC Governor 2026 — Candidate Comparison</title>
+<style>
+  /* Self-contained font stacks — no external requests needed */
+  /* Playfair Display → Georgia → Times → serif (display/headings) */
+  /* Source Serif 4 → Palatino → Book Antiqua → serif (body) */
+  /* JetBrains Mono → Consolas → Courier New → monospace (labels) */
+</style>
+<style>
+  :root {
+    --ink: #1a1209;
+    --paper: #f7f2e8;
+    --cream: #ede7d5;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --red: #8b1a1a;
+    --blue: #1a3a5c;
+    --green: #1a4a2a;
+    --amber: #c47c00;
+    --muted: #6b5e4a;
+    --rule: #c4b49a;
+    --warning: #7a1f1f;
+    --highlight: #fff8dc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ─── MASTHEAD ─────────────────────────────────────────── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 40px 28px;
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 60px, rgba(255,255,255,.03) 60px, rgba(255,255,255,.03) 61px
+    );
+    pointer-events: none;
+  }
+  .masthead-eyebrow {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+  }
+  .masthead h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -.01em;
+  }
+  .masthead h1 em { font-style: italic; color: var(--gold-light); }
+  .masthead-sub {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #c8bfa8;
+    max-width: 700px;
+    font-style: italic;
+  }
+  .masthead-meta {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2px;
+    color: #d4c9b4;
+  }
+  .meta-pill span { color: var(--gold-light); font-weight: 600; }
+
+  /* ─── CONTROLS ──────────────────────────────────────────── */
+  .controls {
+    background: var(--cream);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .controls-label {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .filter-btn {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    padding: 5px 14px;
+    border: 1.5px solid var(--rule);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active   { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .filter-btn.r-active { background: var(--red); border-color: var(--red); color: #fff; }
+  .filter-btn.d-active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+  /* ─── INTRO ─────────────────────────────────────────────── */
+  .intro {
+    max-width: 960px;
+    margin: 32px auto;
+    padding: 0 40px;
+  }
+  .intro h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--ink);
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+  }
+  .intro p { color: #3a3028; margin-bottom: 8px; font-size: 14px; }
+
+  /* ─── ISSUE CONTEXT CARDS ───────────────────────────────── */
+  .context-section {
+    max-width: 1100px;
+    margin: 0 auto 36px;
+    padding: 0 40px;
+  }
+  .context-section h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--ink);
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+  }
+  .context-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+  .context-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .context-card-header {
+    background: var(--cream);
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .context-card-header h4 {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .context-card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .pro-con-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pro-box, .con-box {
+    padding: 8px 10px;
+    border-radius: 2px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+  .pro-box { background: #eef6ee; border-left: 3px solid #2d7a3a; }
+  .pro-box strong { display: block; color: #1a4a22; font-size: 10px; font-family: Consolas, 'Courier New', Courier, monospace; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 3px; }
+  .con-box { background: #fdf3f3; border-left: 3px solid #a03030; }
+  .con-box strong { display: block; color: #7a1f1f; font-size: 10px; font-family: Consolas, 'Courier New', Courier, monospace; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 3px; }
+  .context-note { font-size: 12px; color: var(--muted); font-style: italic; border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 2px; }
+
+  /* ─── MAIN TABLE ─────────────────────────────────────────── */
+  .table-outer {
+    max-width: 1380px;
+    margin: 0 auto 48px;
+    padding: 0 24px;
+  }
+  .table-outer h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    padding-left: 16px;
+    border-left: 3px solid var(--gold);
+    color: var(--ink);
+  }
+  .table-outer .table-note {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    padding-left: 19px;
+    margin-bottom: 18px;
+  }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 920px;
+    background: #fff;
+    border: 1px solid var(--rule);
+  }
+
+  thead th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 9.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+    border-right: 1px solid rgba(255,255,255,.1);
+    white-space: nowrap;
+    position: sticky;
+    top: 48px;
+    z-index: 10;
+    line-height: 1.4;
+  }
+  thead th:first-child { min-width: 160px; background: #111; }
+  thead th.r-col { background: #5c1818; }
+  thead th.d-col { background: #1a2e4a; }
+  thead th small { font-weight: 400; font-size: 8.5px; opacity: .75; display: block; margin-top: 2px; letter-spacing: .05em; }
+
+  tr.category-row td {
+    background: var(--cream);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 14px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-top: 2px solid var(--rule);
+    letter-spacing: .02em;
+  }
+
+  tbody tr:not(.category-row) td {
+    padding: 10px 12px;
+    vertical-align: top;
+    border-right: 1px solid #e8e0d4;
+    border-bottom: 1px solid #e8e0d4;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+  tbody tr:not(.category-row):hover td { background: var(--highlight) !important; }
+
+  td.issue-label {
+    background: var(--cream) !important;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--ink);
+    border-right: 2px solid var(--rule) !important;
+    min-width: 150px;
+    vertical-align: top;
+  }
+  td.issue-label .issue-note {
+    display: block;
+    font-weight: 400;
+    font-size: 10.5px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  td.r-col { background: #fdfafa; }
+  td.d-col { background: #f9fbfd; }
+
+  /* stance tags */
+  .tag {
+    display: inline-block;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tag-support  { background: #d4edda; color: #1a4a2a; }
+  .tag-oppose   { background: #f8d7da; color: #7a1f1f; }
+  .tag-moderate { background: #fff3cd; color: #5a4000; }
+  .tag-unknown  { background: #e2e3e5; color: #444; }
+
+  /* inline pro/con within table cells */
+  .cell-pro, .cell-con {
+    display: block;
+    font-size: 11.5px;
+    padding: 3px 6px 3px 8px;
+    margin-top: 4px;
+    line-height: 1.4;
+    border-radius: 1px;
+  }
+  .cell-pro { border-left: 2px solid #3a9a4a; background: #f3fbf4; }
+  .cell-pro::before { content: '+ '; color: #2d7a3a; font-weight: 700; }
+  .cell-con { border-left: 2px solid #c05050; background: #fdf5f5; }
+  .cell-con::before { content: '− '; color: #a03030; font-weight: 700; }
+
+  /* ─── GLOSSARY ──────────────────────────────────────────── */
+  .glossary {
+    max-width: 960px;
+    margin: 0 auto 40px;
+    padding: 0 40px;
+    border-top: 2px solid var(--rule);
+    padding-top: 28px;
+  }
+  .glossary h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .gloss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .gloss-item { font-size: 12.5px; line-height: 1.5; }
+  .gloss-item strong { color: var(--gold); font-family: Consolas, 'Courier New', Courier, monospace; font-size: 10.5px; letter-spacing:.08em; display: block; margin-bottom: 2px; }
+
+  /* ─── FOOTER ────────────────────────────────────────────── */
+  footer {
+    background: var(--ink);
+    color: #9a8f7e;
+    padding: 20px 40px;
+    font-size: 12px;
+    font-style: italic;
+    border-top: 3px solid var(--gold);
+    line-height: 1.7;
+  }
+
+  @media print {
+    .controls { display: none; }
+    table { font-size: 10px; }
+    thead th { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ MASTHEAD ════════════════════════════════════════════════════════ -->
+<div class="masthead">
+  <div class="masthead-eyebrow">South Carolina Gubernatorial Race · Primary June 9, 2026 · General November 3, 2026</div>
+  <h1>Who Wants to Be <em>Governor</em>?</h1>
+  <div class="masthead-sub">A voter's guide to where every major candidate stands — with the full picture on every issue: what supporters say, what critics say, and what the data shows.</div>
+  <div class="masthead-meta">
+    <div class="meta-pill"><span>5</span> Republican Primary Candidates</div>
+    <div class="meta-pill"><span>3</span> Democratic Primary Candidates</div>
+    <div class="meta-pill"><span>1</span> Independent/Green (General)</div>
+    <div class="meta-pill">Henry McMaster <span>Term-Limited</span></div>
+    <div class="meta-pill">Democrats last won governor: <span>1998</span></div>
+  </div>
+</div>
+
+<!-- ═══ CONTROLS ════════════════════════════════════════════════════════ -->
+<div class="controls">
+  <span class="controls-label">Show:</span>
+  <button class="filter-btn active" onclick="filterCols('all',this)">All Candidates</button>
+  <button class="filter-btn" onclick="filterCols('r',this)">Republicans Only</button>
+  <button class="filter-btn" onclick="filterCols('d',this)">Democrats Only</button>
+</div>
+
+<!-- ═══ INTRO ════════════════════════════════════════════════════════════ -->
+<div class="intro">
+  <h2>The Stakes: Why This Race Matters</h2>
+  <p>With Gov. Henry McMaster term-limited after nearly a decade, South Carolina elects its next governor into a state undergoing real transformation — a manufacturing boom anchored by foreign auto investment, a rural healthcare crisis, the fastest-growing data center market in the Southeast, and ongoing debates about tax competitiveness, school quality, and reproductive rights.</p>
+  <p>The Republican primary is the real electoral contest: Democrats haven't won a statewide race since 2006. But the Democratic candidates represent serious policy alternatives worth understanding, and SC's demographics are slowly shifting. The GOP primary almost certainly goes to a runoff on June 23 if no candidate tops 50%.</p>
+  <p><strong>How to read this guide:</strong> Each issue card below shows the honest case <em>for</em> a policy direction and the honest case <em>against</em> it. The comparison table shows where each candidate stands. No issue is as simple as any campaign makes it sound — this guide tries to give you both sides of every debate.</p>
+</div>
+
+<!-- ═══ ISSUE CONTEXT CARDS ══════════════════════════════════════════════ -->
+<div class="context-section">
+  <h2>The Key Issues — Both Sides of the Debate</h2>
+  <div class="context-grid">
+
+    <!-- Income Tax -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>State Income Tax Elimination</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For</strong>SC currently has one of the highest income tax rates in the Southeast (being phased from 7% to 6%). Eliminating it would make SC competitive with Florida and Tennessee, attract high-income residents and businesses, and put more money directly in workers' pockets. Neighboring states with no income tax have seen strong job and population growth.</div>
+          <div class="con-box"><strong>The Case Against</strong>The income tax generates billions in annual state revenue that funds schools, roads, and services. No candidate has fully detailed a replacement mechanism. Critics warn the gap could shift tax burden to sales and property taxes, which hit lower-income households harder proportionally.</div>
+        </div>
+        <p class="context-note">SC's income tax currently accounts for roughly 40% of general fund revenue. A phase-out over many years is more realistic than an immediate cut; most candidates acknowledge this privately even if they campaign on full elimination.</p>
+      </div>
+    </div>
+
+    <!-- Data Centers -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>AI Data Centers</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For</strong>Data centers bring high-paying tech-adjacent jobs, generate substantial property tax revenue, and diversify SC's economy beyond manufacturing and tourism. The tax revenue they produce could meaningfully offset the cost of income tax elimination — a direct link most candidates don't explicitly make. They also accelerate broadband and electrical infrastructure investment that benefits the whole region.</div>
+          <div class="con-box"><strong>The Case Against</strong>Hyperscale AI facilities consume enormous amounts of electricity and water. Without strict conditions, ratepayers and farmers can bear those costs. Data centers are also capital-intensive but not always labor-intensive — the job-to-investment ratio is often lower than traditional manufacturing. Some incentive deals have given companies large property tax breaks that reduce the net revenue benefit.</div>
+        </div>
+        <p class="context-note">South Carolina voters polled strongly: they don't want utility bills to rise as a result of data center expansion. The policy question isn't whether to allow them — it's what conditions to attach.</p>
+      </div>
+    </div>
+
+    <!-- Abortion -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>Abortion Law</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For Restrictions</strong>Supporters argue that life begins at conception or detectable heartbeat and that the state has a compelling interest in protecting unborn life. SC's current 6-week law reflects a compromise position supported by major pro-life organizations. They note it includes exceptions for rape, incest, and maternal health.</div>
+          <div class="con-box"><strong>The Case Against Restrictions</strong>Critics argue a 6-week ban — before many women know they are pregnant — is functionally a near-total ban. The proposed S.1095 would remove rape and incest exceptions and impose criminal penalties on doctors and women. Doctors warn it worsens SC's already serious maternal health and OB-GYN shortage crisis.</div>
+        </div>
+        <p class="context-note">SC has a genuine OB-GYN shortage, especially in rural areas. Abortion restrictions and that physician shortage interact — a policy reality most campaign messaging ignores on both sides.</p>
+      </div>
+    </div>
+
+    <!-- School Choice -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>School Choice / Vouchers</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For</strong>School choice gives families — especially lower-income families in failing districts — the ability to exit underperforming schools. Competition creates incentives for public schools to improve. SC's rural and lower-income communities are often most poorly served by their assigned public school, and choice programs give those parents an alternative they previously lacked.</div>
+          <div class="con-box"><strong>The Case Against</strong>Critics argue voucher programs divert funding from public schools that serve the majority of children, leaving those schools with fewer resources. Private schools accepting vouchers are often not subject to the same accountability or accessibility standards. Early data from other states shows mixed results on academic outcomes for voucher students.</div>
+        </div>
+        <p class="context-note">SC's existing program is relatively new. Its long-term effects on both private and public school quality in SC specifically are still being measured — honest advocates on both sides acknowledge the evidence is still developing.</p>
+      </div>
+    </div>
+
+    <!-- Medicaid -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>Medicaid Expansion</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For</strong>SC has refused federal Medicaid expansion since 2013, leaving an estimated 500,000 residents uninsured — the "coverage gap" between Medicaid eligibility and marketplace subsidies. Expansion would bring significant federal matching funds (90 cents on every state dollar), slow rural hospital closures, and cover the state's workforce in healthcare-adjacent industries. 40 states including many Republican-led states have expanded.</div>
+          <div class="con-box"><strong>The Case Against</strong>Opponents argue Medicaid expansion grows government dependency, adds long-term state budget obligations (even with federal matching), and that the federal government may reduce its match percentage over time, leaving SC on the hook. Some argue market-based and direct primary care solutions address the same problem more efficiently.</div>
+        </div>
+        <p class="context-note">SC has left an estimated $16–18 billion in federal funds on the table since 2013 by refusing expansion. This is one of the sharpest real-world policy differences between the parties in this race.</p>
+      </div>
+    </div>
+
+    <!-- Infrastructure -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>Roads, Bridges &amp; Infrastructure</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For Investment</strong>SC consistently ranks among the worst states for road and bridge condition. Poor infrastructure raises costs for every SC business, reduces property values in affected communities, creates safety hazards, and makes the state less competitive for attracting new employers. Federal infrastructure funds are available; a governor who prioritizes this can leverage them aggressively.</div>
+          <div class="con-box"><strong>The Reality Check</strong>SC's road funding formula is complex and largely legislatively controlled. A governor's ability to "fix roads" is limited without legislative cooperation — and proposals to restructure road funding have repeatedly stalled. Voters should ask candidates specifically how they plan to change the funding mechanism, not just that they'll fix the problem.</div>
+        </div>
+        <p class="context-note">SC has more state-maintained lane miles per capita than almost any other state — a legacy of a uniquely centralized system. That structure makes reform politically difficult and rarely discussed candidly on the campaign trail.</p>
+      </div>
+    </div>
+
+    <!-- Foreign Investment -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>Foreign Investment &amp; Chinese Companies</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For Restrictions</strong>National security concerns about Chinese-linked companies owning land near military installations (SC has several) or operating in critical supply chains are legitimate and bipartisan at the federal level. Restricting Chinese government-linked companies from certain sectors reflects a broader industrial policy shift shared by both Trump and Biden administrations.</div>
+          <div class="con-box"><strong>The Case Against Broad Bans</strong>SC's economy is built on foreign investment — BMW, Volvo, Michelin, and hundreds of supplier companies employ tens of thousands. Overly broad restrictions could conflict with trade agreements, trigger retaliation that harms existing employers, or create legal uncertainty that deters all foreign investment. The distinction between national-security threats and ordinary foreign business matters enormously in implementation.</div>
+        </div>
+        <p class="context-note">SC has attracted over $50 billion in foreign direct investment. The challenge is surgical precision: restricting genuine national security risks without sweeping up legitimate employers that are pillars of the Upstate economy.</p>
+      </div>
+    </div>
+
+    <!-- Predatory Lending -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>Predatory Lending</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For Reform</strong>SC has among the most permissive payday lending laws in the nation. High-interest short-term loans trap lower-income borrowers in debt cycles that undermine financial stability, reduce consumer spending in local economies, and disproportionately affect Black and rural communities. Reform advocates say rate caps and consumer protections would benefit hundreds of thousands of SC households.</div>
+          <div class="con-box"><strong>The Counter Argument</strong>Supporters of the industry argue that short-term lenders serve customers who have no other credit access — that eliminating payday loans doesn't eliminate financial emergencies, it just removes one option. Some research suggests strict rate caps can reduce credit availability for the very populations reformers aim to help.</div>
+        </div>
+        <p class="context-note">Democratic candidate Billy Webster co-founded Advance America, one of the nation's largest payday lenders, and now calls for reform of the industry he helped build. His credibility on this issue will face scrutiny regardless of the merits of his current position.</p>
+      </div>
+    </div>
+
+    <!-- Judicial Reform -->
+    <div class="context-card">
+      <div class="context-card-header"><h4>Judicial Selection Reform</h4></div>
+      <div class="context-card-body">
+        <div class="pro-con-row">
+          <div class="pro-box"><strong>The Case For Popular Elections</strong>SC is one of only two states where the legislature selects judges — creating a system where judges may feel beholden to lawmakers rather than the public. Popular elections, advocates argue, give citizens direct accountability over the courts and reduce the insider nature of judicial appointments.</div>
+          <div class="con-box"><strong>The Case Against Popular Elections</strong>Judicial races with campaign fundraising introduce the same special-interest money problems into courts that they have in legislatures. Studies show elected judges in states like Texas and Alabama often rule in ways that favor major campaign donors. The current SC system, while unusual, insulates judges from direct campaign politics — a protection that benefits business predictability and civil rights alike.</div>
+        </div>
+        <p class="context-note">This is an underreported issue with long-term implications for every business contract dispute, criminal appeal, and civil rights case that comes before SC courts. Both the current system and popular elections have serious, well-documented flaws.</p>
+      </div>
+    </div>
+
+  </div><!-- end context-grid -->
+</div><!-- end context-section -->
+
+<!-- ═══ MAIN COMPARISON TABLE ════════════════════════════════════════════ -->
+<div class="table-outer">
+  <h2>Full Candidate Comparison by Issue</h2>
+  <p class="table-note">Positions sourced from campaign announcements, debates (Newberry April 20; Charleston April 21–22, 2026), candidate interviews, and legislative records. Each cell shows the candidate's position plus key + upsides and − concerns. "N/S" = Not Stated publicly. Scroll right if needed.</p>
+  <div class="table-scroll">
+  <table id="mainTable">
+    <thead>
+      <tr>
+        <th>Issue</th>
+        <th class="r-col">🔴 Pamela Evette<br><small>Lt. Gov. / Business Owner</small></th>
+        <th class="r-col">🔴 Alan Wilson<br><small>Attorney General (4 terms)</small></th>
+        <th class="r-col">🔴 Nancy Mace<br><small>U.S. Rep., 1st District</small></th>
+        <th class="r-col">🔴 Ralph Norman<br><small>U.S. Rep., 5th District</small></th>
+        <th class="r-col">🔴 Josh Kimbrell<br><small>State Senator, District 11</small></th>
+        <th class="d-col">🔵 Billy Webster<br><small>Businessman (Greenville)</small></th>
+        <th class="d-col">🔵 Jermaine Johnson<br><small>State Rep., Richland Co.</small></th>
+        <th class="d-col">🔵 Mullins McLeod<br><small>Attorney (Charleston)</small></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ══ TAXES ══════════════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Taxes &amp; Economy</td></tr>
+
+      <tr>
+        <td class="issue-label">State Income Tax
+          <span class="issue-note">Currently being phased 7%→6% under 2022 law</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Eliminate</span>
+          <span class="cell-pro">Helped deliver 2022 tax cut; makes SC competitive in Southeast</span>
+          <span class="cell-con">Phase-in timeline and revenue replacement unspecified</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Eliminate</span>
+          <span class="cell-pro">Models Florida/Tennessee success; direct relief for every taxpayer</span>
+          <span class="cell-con">No detailed plan for the ~$4B+ revenue gap</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Eliminate via Spending Cap</span>
+          <span class="cell-pro">Unique, specific mechanism: freeze spending at $11.6B; every dollar above = permanent rate cut. Most concrete plan in the field.</span>
+          <span class="cell-con">Spending freeze could constrain investments in growing infrastructure needs</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Eliminate</span>
+          <span class="cell-pro">Fiscal conservative record; has voted against federal spending expansions consistently</span>
+          <span class="cell-con">Few SC-specific details; relying on broad DOGE-style cuts to fund gap</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Eliminate</span>
+          <span class="cell-pro">Senate finance experience; was in the room for 2022 cut</span>
+          <span class="cell-con">Full elimination plan not yet detailed beyond aspirational pledge</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Reform, Not Eliminate</span>
+          <span class="cell-pro">Wants to rebalance: individuals pay 5× more than corporations — fix that imbalance first</span>
+          <span class="cell-con">Less aggressive on tax reduction than Republican field; may not appeal to swing business voters</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Reform, Not Eliminate</span>
+          <span class="cell-pro">Focuses on tax fairness over headline rate cuts; supports working-class households</span>
+          <span class="cell-con">Vague on specifics; reform without rate cuts may not attract business investment</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Reform, Not Eliminate</span>
+          <span class="cell-pro">Most specific Democrat on corporate tax disparity; data center tax break critique is well-sourced</span>
+          <span class="cell-con">Populist framing may create perception of anti-business environment</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Government Efficiency / Spending</td>
+        <td class="r-col"><span class="tag tag-support">Cut + AI-Driven</span>
+          <span class="cell-pro">Use AI to streamline agencies; business experience makes her credible on operational efficiency</span>
+          <span class="cell-con">SC governor has limited direct control over agency budgets; legislature must cooperate</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Audit Initiative</span>
+          <span class="cell-pro">"Families First Audit Initiative" is the most detailed and specific plan; Lt. Gov. pick Reichenbach has auditing background</span>
+          <span class="cell-con">Audits reveal problems; fixing them requires political will and legislative buy-in</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Mandatory 3–4% Agency Cuts</span>
+          <span class="cell-pro">Structural annual cuts force prioritization; not discretionary — agencies must find savings</span>
+          <span class="cell-con">Blanket percentage cuts don't distinguish between wasteful programs and essential services</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">SC-DOGE Agency</span>
+          <span class="cell-pro">"Clean up Columbia" — genuine accountability structure modeled on federal effort; Freedom Caucus credentials add credibility with conservative base</span>
+          <span class="cell-con">Federal DOGE's results are mixed; replication at state level is untested</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Deregulate + Cut</span>
+          <span class="cell-pro">Senate experience means he knows where actual waste exists; not just campaigning on vague "efficiency"</span>
+          <span class="cell-con">Deregulation benefits vary; some regulations protect consumers and environment</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Targeted Reform</span>
+          <span class="cell-pro">Business background; has run large organizations; understands operations vs. ideology</span>
+          <span class="cell-con">Less specific than some Republican proposals; harder to differentiate</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">More Resources, Better Use</span>
+          <span class="cell-pro">Counties are underfunded — the problem isn't just waste, it's structural underinvestment</span>
+          <span class="cell-con">More resources to local government requires either higher taxes or federal funds, both politically complex</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Follow the Money</span>
+          <span class="cell-pro">Most specific Democrat on where he believes money is misused at state level</span>
+          <span class="cell-con">Specific accountability claims need verification once in office</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Data Centers (AI/Tech)
+          <span class="issue-note">SC is a fast-growing data center market</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Conditional Support</span>
+          <span class="cell-pro">Welcomes tech investment and tax revenue; insists centers cover added energy/water costs so ratepayers aren't burdened</span>
+          <span class="cell-con">"Cover their costs" condition needs specific enforcement mechanism to be meaningful</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Incentivize + Regulate</span>
+          <span class="cell-pro">Would structure incentives so data centers generate energy for the grid, potentially lowering utility bills broadly. Already working on legislation.</span>
+          <span class="cell-con">Details of the energy-return incentive structure are still being developed</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Pay Their Own Way</span>
+          <span class="cell-pro">Clear, simple standard: data centers pay for energy, water, roads — no taxpayer subsidy. Protects ratepayers explicitly.</span>
+          <span class="cell-con">May be less competitive for attracting investment vs. states that offer more incentives</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Protect Grid &amp; Water</span>
+          <span class="cell-pro">Most explicit about protecting existing electricity supply for residents and farms; no ratepayer burden</span>
+          <span class="cell-con">Strong protectionist stance could limit economic development opportunities</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">ACE Basin Protections</span>
+          <span class="cell-pro">Working with Sen. Davis on actual legislation; most specific about protecting the ACE Basin water system — a real, measurable commitment</span>
+          <span class="cell-con">Focus on one region; statewide framework still needed</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Conservation-First</span>
+          <span class="cell-pro">Pairs data center policy with conservation plan — sees them as linked issues rather than separate ones</span>
+          <span class="cell-con">Framing may be seen as anti-development even when the intent is protective</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Workers Must Benefit</span>
+          <span class="cell-pro">Focuses on job quality and local hiring — tax revenue alone isn't enough if jobs don't go to SC residents</span>
+          <span class="cell-con">Local hiring requirements can complicate recruitment for specialized tech roles</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Skeptical of Tax Breaks</span>
+          <span class="cell-pro">Correctly identifies that property tax breaks for data centers reduce their net fiscal benefit to the state — a point most candidates ignore</span>
+          <span class="cell-con">Removing all incentives could make SC less competitive vs. neighboring states offering deals</span>
+        </td>
+      </tr>
+
+      <!-- ══ EDUCATION ══════════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Education</td></tr>
+
+      <tr>
+        <td class="issue-label">School Choice / Vouchers</td>
+        <td class="r-col"><span class="tag tag-support">Expand</span>
+          <span class="cell-pro">Gives all families the same options wealthy families already have; promotes competition</span>
+          <span class="cell-con">Voucher value may not cover full private school tuition in rural areas where options are limited</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Expand</span>
+          <span class="cell-pro">Ties school funding to performance accountability; competitive pressure can raise all schools</span>
+          <span class="cell-con">Performance funding requires reliable, fair measurement — a technically difficult challenge</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Expand + Vocational</span>
+          <span class="cell-pro">Adds vocational/trade school access — addressing real SC workforce shortage in skilled trades; broader than just private school vouchers</span>
+          <span class="cell-con">Vocational expansion without public school investment could bifurcate students by socioeconomic status</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Expand</span>
+          <span class="cell-pro">Consistent long-term supporter; parents, not government, should decide where children learn</span>
+          <span class="cell-con">Few specifics on how rural SC — where private alternatives barely exist — benefits</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Expand + Office of Parental Rights</span>
+          <span class="cell-pro">Would create formal structure to protect parental rights in education; addresses parent frustration with school bureaucracy</span>
+          <span class="cell-con">Parental rights office could become a mechanism for curriculum interference without clear guardrails</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Invest in Public Schools</span>
+          <span class="cell-pro">Public schools serve 90%+ of SC children; investing there benefits the most students</span>
+          <span class="cell-con">Opposition to choice limits options for families currently stuck in failing schools</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Raise Teacher Pay First</span>
+          <span class="cell-pro">SC teacher pay is below regional average; retention crisis is real and directly impacts outcomes</span>
+          <span class="cell-con">Teacher pay increases require sustained budget commitment that competes with other priorities</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Stop Diverting Funds</span>
+          <span class="cell-pro">Argues money must stay in public system to fund teacher pay, facilities, and programs</span>
+          <span class="cell-con">Defending the status quo public school system is a harder sell in districts with documented failures</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Early Literacy &amp; Reading</td>
+        <td class="r-col"><span class="tag tag-support">Phonics Reform</span>
+          <span class="cell-pro">Science of reading consensus supports phonics; SC has historically under-used it</span>
+          <span class="cell-con">Curriculum change requires teacher retraining — a slow, expensive process</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Early Intervention</span>
+          <span class="cell-pro">"Pay for work at age 3–4" — early childhood investment has the highest return on dollar of any education spending, per research</span>
+          <span class="cell-con">Pre-K expansion is expensive and requires sustained funding commitment beyond one governor's term</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">3rd Grade Retention</span>
+          <span class="cell-pro">Third-grade reading proficiency is one of the strongest predictors of long-term outcomes; holding students back ensures mastery before advancing</span>
+          <span class="cell-con">Research on retention is mixed — some studies show it stigmatizes children without improving outcomes; works best alongside intensive support</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">General Reform</span>
+          <span class="cell-pro">Acknowledges problem exists; supports bringing in outside accountability</span>
+          <span class="cell-con">Less specific than other candidates on the how</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">General Reform</span>
+          <span class="cell-pro">Senate experience with education legislation gives him implementation credibility</span>
+          <span class="cell-con">2022 library restriction proposal raised concerns about scope of parental rights in public institutions</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Raise Teacher Pay</span>
+          <span class="cell-pro">Hard to improve literacy if schools can't attract and retain qualified teachers; addresses root cause</span>
+          <span class="cell-con">Pay alone doesn't fix curriculum or instructional methodology problems</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Resources + Reform</span>
+          <span class="cell-pro">Infrastructure and healthcare investment as preconditions for learning — children in poverty or health insecurity can't focus on reading</span>
+          <span class="cell-con">Broad framing risks diluting focus on the specific literacy instruction problem</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Teacher Pay + Standards</span>
+          <span class="cell-pro">Links teacher compensation to ability to enforce meaningful curriculum standards</span>
+          <span class="cell-con">Less detail than Republican candidates on specific literacy methodology</span>
+        </td>
+      </tr>
+
+      <!-- ══ HEALTHCARE ══════════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Healthcare</td></tr>
+
+      <tr>
+        <td class="issue-label">Medicaid Expansion
+          <span class="issue-note">~500,000 SC residents in coverage gap</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Oppose</span>
+          <span class="cell-pro">Avoids long-term state budget obligations if federal match is reduced; market solutions preferred</span>
+          <span class="cell-con">SC has left an estimated $16–18B in federal matching funds unclaimed since 2013; rural hospitals are closing</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Oppose</span>
+          <span class="cell-pro">Prefers private-sector healthcare solutions; avoiding federal program dependency</span>
+          <span class="cell-con">No specific alternative proposed to cover the half-million uninsured; infrastructure focus doesn't address coverage gap</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Oppose</span>
+          <span class="cell-pro">Free-market approach; avoids government program expansion</span>
+          <span class="cell-con">No alternative plan for coverage gap residents; spending freeze could further constrain healthcare options</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Oppose</span>
+          <span class="cell-pro">Consistent with conservative limited-government philosophy</span>
+          <span class="cell-con">SC's uninsured rate directly affects workforce availability — a key economic development issue Norman cares about</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Oppose</span>
+          <span class="cell-pro">Limited government approach; federal programs create dependency and long-term obligations</span>
+          <span class="cell-con">No alternative healthcare access proposal for the uninsured population</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Strong Support</span>
+          <span class="cell-pro">"Can't function with half a million uninsured." 90-cent federal match makes it financially advantageous. 40 states including red states have expanded.</span>
+          <span class="cell-con">Federal match rate could be reduced in future budget negotiations, increasing SC's share</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Strong Support</span>
+          <span class="cell-pro">Rural hospital closings are directly tied to uninsured patient load; expansion addresses root cause</span>
+          <span class="cell-con">Implementation is administratively complex and takes years to fully deploy</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Support</span>
+          <span class="cell-pro">Part of broader health equity platform; addresses disproportionate impact on Black and rural SC residents</span>
+          <span class="cell-con">Unlikely to win legislative approval from Republican-controlled General Assembly without significant political shift</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Rural Hospital Crisis</td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">No specific proposal to address rural hospital closures</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Indirect</span>
+          <span class="cell-pro">Energy grid and infrastructure investment includes improving access; broadband in rural areas supports telehealth</span>
+          <span class="cell-con">Telehealth doesn't replace surgery, emergency care, or OB-GYN services disappearing from rural SC</span>
+        </td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">Not specifically addressed; spending freeze could harm rural hospital funding</span>
+        </td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">Infrastructure focus is on roads, not healthcare access</span>
+        </td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">Not specifically addressed in platform</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Central Issue</span>
+          <span class="cell-pro">Directly links Medicaid expansion to keeping rural hospitals open; shows the causal connection clearly</span>
+          <span class="cell-con">Even with expansion, rural hospitals also face workforce and capital investment challenges beyond insurance coverage</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Central Issue</span>
+          <span class="cell-pro">"Rural hospitals closing" is a concrete, visible harm his campaign puts front and center; gives voters a specific stake in healthcare policy</span>
+          <span class="cell-con">Solution (Medicaid expansion) requires legislative change that will face Republican opposition regardless of who is governor</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Part of Platform</span>
+          <span class="cell-pro">Health equity framing addresses the geographic and racial disparities in SC's healthcare access</span>
+          <span class="cell-con">Broad framing needs more specific rural policy proposals</span>
+        </td>
+      </tr>
+
+      <!-- ══ ABORTION ════════════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Reproductive Rights &amp; Abortion</td></tr>
+
+      <tr>
+        <td class="issue-label">Current 6-Week Heartbeat Law
+          <span class="issue-note">Includes exceptions for rape, incest, maternal health</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Defend</span>
+          <span class="cell-pro">Endorsed by Susan B. Anthony Pro-Life America; reflects SC majority view in polling; includes rape/incest exceptions</span>
+          <span class="cell-con">Six weeks is before many women know they are pregnant; OB-GYN physicians cite chilling effects on practice in SC</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Defend</span>
+          <span class="cell-pro">As AG, has enforced the law; supports the exceptions as a workable compromise</span>
+          <span class="cell-con">AG's role in prosecuting violations means he has direct experience with the law's edge cases and ambiguities</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Defend</span>
+          <span class="cell-pro">Personal survivor experience gives her credibility defending rape/incest exceptions; aligns with Trump's national position</span>
+          <span class="cell-con">Aligning with Trump's national position means SC policy is driven partly by national political calculation</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Defend</span>
+          <span class="cell-pro">"100% Pro-Life" record; consistent and principled position over long career</span>
+          <span class="cell-con">Hard-line position may struggle in a general election if he is the nominee</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Defend</span>
+          <span class="cell-pro">"Fought for life" in Senate; strong base support from pro-life community</span>
+          <span class="cell-con">Did not explicitly commit to vetoing the near-total ban (S.1095) at the April debate — more aggressive than peers</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Restore Access</span>
+          <span class="cell-pro">Majority of SC residents polled support abortion access beyond 6 weeks; restoring access aligns with that majority view</span>
+          <span class="cell-con">Unlikely to move Republican-controlled legislature; would require veto power at minimum and constant legal/legislative battles</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Restore Access</span>
+          <span class="cell-pro">Positions SC to attract healthcare workers and businesses who cite abortion access as a location factor</span>
+          <span class="cell-con">Faces same structural challenge — governor can veto but cannot pass legislation alone</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Restore Access</span>
+          <span class="cell-pro">Frames access as an economic and medical issue, not just a social one — potentially broader appeal</span>
+          <span class="cell-con">McLeod's personal controversies complicate his ability to deliver this message credibly</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Near-Total Ban (S.1095)
+          <span class="issue-note">Would remove rape/incest exceptions; criminal penalties for doctors and women</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Would Veto</span>
+          <span class="cell-pro">Shows independence from the most extreme legislative push; backed by major pro-life organizations that also oppose this bill as going too far</span>
+          <span class="cell-con">Position could shift under post-primary activist pressure</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Would Veto</span>
+          <span class="cell-pro">Supports current exceptions; pragmatic about what is legally and politically sustainable</span>
+          <span class="cell-con">Has not been as emphatic as Evette in publicly opposing the bill</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Would Veto</span>
+          <span class="cell-pro">References personal assault experience; personal stake in maintaining exceptions makes her position credible</span>
+          <span class="cell-con">National political branding complicates maintaining a moderate abortion position against base pressure</span>
+        </td>
+        <td class="r-col"><span class="tag tag-oppose">Likely Veto</span>
+          <span class="cell-pro">Has not committed to signing; current signals suggest veto of total ban</span>
+          <span class="cell-con">Least explicit of top-tier candidates; "100% Pro-Life" label creates ambiguity</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Unclear</span>
+          <span class="cell-pro">Most consistently pro-life record; could argue bill reflects his values</span>
+          <span class="cell-con">Did not explicitly veto S.1095 at debate; most at risk of signing if it reaches his desk. Criminal penalties for women are extreme and politically vulnerable.</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Strongly Oppose</span>
+          <span class="cell-pro">Clear position on criminal penalties for women and doctors; a genuine protection against the most extreme scenario</span>
+          <span class="cell-con">Democratic governor faces Republican supermajority in legislature — veto is powerful but cannot mandate policy</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Strongly Oppose</span>
+          <span class="cell-pro">Cites maternal health and physician shortage; connects the ban to concrete harms in SC healthcare</span>
+          <span class="cell-con">Same structural constraint — veto is available but not a path to positive change</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Strongly Oppose</span>
+          <span class="cell-pro">Clear opposition to criminal penalties for women; one of the few issues where McLeod's position is unambiguous</span>
+          <span class="cell-con">Personal controversies reduce his effectiveness as a messenger even on strong positions</span>
+        </td>
+      </tr>
+
+      <!-- ══ IMMIGRATION ════════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Immigration &amp; Enforcement</td></tr>
+
+      <tr>
+        <td class="issue-label">Undocumented Immigrants
+          <span class="issue-note">SC has significant agricultural and construction workforce implications</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Enforcement</span>
+          <span class="cell-pro">Target "sanctuary sheriffs" who don't cooperate with ICE; promotes rule of law; popular with Republican primary base</span>
+          <span class="cell-con">SC's agricultural and construction sectors rely heavily on undocumented labor; mass removal could create workforce and economic disruption</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Enforcement</span>
+          <span class="cell-pro">Follows Trump's national framework; cooperates with federal enforcement; consistent with AG record</span>
+          <span class="cell-con">State-level enforcement authority is limited; many enforcement actions require federal resources and coordination</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Aggressive Enforcement</span>
+          <span class="cell-pro">$1,000/day fine on employers creates economic deterrent; "Trump in high heels" branding activates national base attention and fundraising</span>
+          <span class="cell-con">Business fines could hit SC employers in agriculture, construction, hospitality — sectors that employ many SC citizens in management and related roles</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Enforcement</span>
+          <span class="cell-pro">Consistent Freedom Caucus position; strong enforcement message for primary voters</span>
+          <span class="cell-con">No SC-specific agricultural workforce plan; broad enforcement could harm Upstate and rural economies</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Enforce + Legal Pathway</span>
+          <span class="cell-pro">Promotes legal immigration alongside enforcement — a more nuanced position that acknowledges SC's labor needs</span>
+          <span class="cell-con">Legal pathway language may be rhetorical without specific visa reform proposals that a governor can't implement anyway</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Humane + Economic</span>
+          <span class="cell-pro">Focuses on economic reality — SC's industries need workers; legal pathways and economic contributions matter</span>
+          <span class="cell-con">Moderate position may be insufficient for voters who want strong enforcement rhetoric; may not activate Democratic base</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Oppose Mass Deportation</span>
+          <span class="cell-pro">Has publicly pushed back on ICE cooperation at state level; consistent with civil rights platform</span>
+          <span class="cell-con">Limiting ICE cooperation has real legal constraints at the state level; may be more rhetoric than achievable policy</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Reform-Oriented</span>
+          <span class="cell-pro">Economic justice framing — immigrant workers are also consumers and community members who support SC's economy</span>
+          <span class="cell-con">Least specific Democrat on immigration policy; position not well developed in public statements</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Chinese Companies / Foreign Investment Restrictions</td>
+        <td class="r-col"><span class="tag tag-support">Restrict Chinese Firms</span>
+          <span class="cell-pro">Genuine national security concerns exist around Chinese government-linked companies near SC military bases; SC law already restricts some land purchases</span>
+          <span class="cell-con">SC's economy is anchored by Volvo, BMW, Michelin — broad "foreign restriction" framing creates uncertainty for legitimate employers</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Targeted Restrictions</span>
+          <span class="cell-pro">More measured than peers; addresses genuine security concerns without sweeping economic impact</span>
+          <span class="cell-con">Has not detailed which Chinese-linked companies are in scope vs. exempt</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Restrict</span>
+          <span class="cell-pro">National security issue with genuine bipartisan consensus at federal level; popular with base</span>
+          <span class="cell-con">As a governor, she would have limited ability to restrict federally-regulated foreign investment; mostly messaging</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Restrict</span>
+          <span class="cell-pro">Consistent with national security conservatism; property rights background means he understands land ownership angle</span>
+          <span class="cell-con">Restrictions need to be surgical; broad application could hurt SC's investment climate</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Restrict</span>
+          <span class="cell-pro">Popular position; national security framing is credible and bipartisan</span>
+          <span class="cell-con">Lacks specificity on scope; enforcement at state level limited by federal preemption on investment rules</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Case-by-Case</span>
+          <span class="cell-pro">Nuanced approach protects existing employers; doesn't create blanket uncertainty for foreign investors who employ SC workers</span>
+          <span class="cell-con">May be perceived as soft on China in an environment where that's a political liability</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Case-by-Case</span>
+          <span class="cell-pro">Protects SC jobs at foreign-owned manufacturers by not endorsing blanket bans</span>
+          <span class="cell-con">Less specific than Republicans on national security angle</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Anti-Foreign Corp (Broad)</span>
+          <span class="cell-pro">Wants to end all foreign for-profit corporate special privileges — addresses corporate welfare broadly</span>
+          <span class="cell-con">Potentially the widest-reaching restriction in the field — could affect all of SC's foreign manufacturing base, not just Chinese firms</span>
+        </td>
+      </tr>
+
+      <!-- ══ INFRASTRUCTURE ════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Infrastructure &amp; Environment</td></tr>
+
+      <tr>
+        <td class="issue-label">Roads &amp; Bridges
+          <span class="issue-note">SC ranks among worst nationally for bridge condition</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Priority</span>
+          <span class="cell-pro">Business background; understands infrastructure as economic foundation; aligns with McMaster record</span>
+          <span class="cell-con">No specific funding mechanism; SC's road funding formula is legislatively controlled and difficult to change</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Top Priority</span>
+          <span class="cell-pro">Most detailed Republican infrastructure plan; advisory council model brings in outside expertise; links roads to economic development and military community access</span>
+          <span class="cell-con">Advisory councils advise — they don't appropriate. Funding still requires legislative action.</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Addressed Broadly</span>
+          <span class="cell-pro">Spending freeze creates pressure on legislature to prioritize; roads are visible and politically popular</span>
+          <span class="cell-con">A spending freeze applied to a state with deteriorating infrastructure is contradictory; roads need investment, not freezing</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Signature Issue</span>
+          <span class="cell-pro">Lt. Gov. pick serves as dedicated "road czar" — most specific organizational proposal; puts accountability on a named person</span>
+          <span class="cell-con">A road czar can coordinate but cannot fund; SC's DOT funding structure needs legislative reform that Norman has not detailed</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Priority</span>
+          <span class="cell-pro">Senate experience means he knows the actual funding mechanisms, not just campaign rhetoric</span>
+          <span class="cell-con">Has not proposed specific changes to SC's road funding formula</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Conservation + Infrastructure</span>
+          <span class="cell-pro">Pairs infrastructure with conservation — infrastructure that damages SC's natural resources is counter-productive long-term</span>
+          <span class="cell-con">Joint conservation/infrastructure framing may dilute urgency of road repair that voters want addressed specifically</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Top Priority</span>
+          <span class="cell-pro">"Highest percentage of bridges in disrepair in the country" — strongest and most direct language of any candidate; makes voters feel the stakes</span>
+          <span class="cell-con">Correctly identifies the problem; needs more specifics on how to fund the fix given SC's road funding structure</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Priority</span>
+          <span class="cell-pro">Frames road funding as an equity issue — rural and low-income communities bear the worst roads</span>
+          <span class="cell-con">Equity framing is accurate but may not build the broadest coalition for action</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Energy &amp; Electricity Grid</td>
+        <td class="r-col"><span class="tag tag-support">Energy Independence</span>
+          <span class="cell-pro">Energy independence reduces dependence on federal policy and volatile energy markets; protects ratepayers from external price shocks</span>
+          <span class="cell-con">SC's energy infrastructure is privately owned by regulated utilities; governor's direct control is limited</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Grid Reliability + Data Centers Must Contribute</span>
+          <span class="cell-pro">Incentivize data centers to generate their own power and return excess to the grid — could actually lower utility rates for residents</span>
+          <span class="cell-con">Incentive structure is still being designed; details needed before this can be evaluated as a real proposal</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Independence + Pay Their Own Way</span>
+          <span class="cell-pro">Data centers paying for their own energy prevents cost-shifting to residents; clear principle that protects ratepayers</span>
+          <span class="cell-con">Without alternative energy incentive, "pay your own way" may slow grid investment that would benefit everyone</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Protect Existing Supply</span>
+          <span class="cell-pro">Protects residents and farmers from energy demand spikes caused by large tech facilities</span>
+          <span class="cell-con">Protective posture without a growth strategy for SC's power generation capacity is insufficient long-term</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Protect Grid + ACE Basin</span>
+          <span class="cell-pro">Working on actual legislation; demonstrates understanding that energy and water are linked issues</span>
+          <span class="cell-con">Still needs a statewide framework beyond the ACE Basin region specifically</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Sustainable Energy Plan</span>
+          <span class="cell-pro">Long-term conservation plan includes sustainable energy infrastructure — positions SC for clean energy jobs and investment</span>
+          <span class="cell-con">Clean energy transition takes years and significant capital; a governor's term is four years</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Reliable + Equitable</span>
+          <span class="cell-pro">Rural SC has historically had the least reliable grid; equity focus addresses a real and under-reported disparity</span>
+          <span class="cell-con">Grid equity requires utility regulation reform — challenging without legislative support</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Sustainable</span>
+          <span class="cell-pro">Conservation framework includes energy; opposes corporate cost-shifting to ratepayers</span>
+          <span class="cell-con">Least specific of the three Democrats on energy policy details</span>
+        </td>
+      </tr>
+
+      <!-- ══ GOVERNANCE ════════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Government Reform &amp; Governance</td></tr>
+
+      <tr>
+        <td class="issue-label">Trump Alignment</td>
+        <td class="r-col"><span class="tag tag-support">Staunch Alignment</span>
+          <span class="cell-pro">In a SC Republican primary, Trump alignment is an asset; she can implement Trump's state-level agenda with full executive buy-in</span>
+          <span class="cell-con">Deep alignment limits independence; general election vulnerability if Trump's approval rating shifts</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Aligned but Independent</span>
+          <span class="cell-pro">"Elect me on my merits, not the endorsement" — positioned to be both Trump-compatible and independently credible</span>
+          <span class="cell-con">Seeking but not yet having Trump's endorsement creates uncertainty in the primary</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Most Vocal Alignment</span>
+          <span class="cell-pro">"Trump in high heels" drives national media attention, fundraising, and name recognition well beyond SC</span>
+          <span class="cell-con">Most polarizing candidate in the field; high name recognition comes with high negatives; personal legal controversies add risk</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Aligned but Not Seeking Endorsement</span>
+          <span class="cell-pro">Unique positioning: Freedom Caucus credentials prove conservative purity without depending on Trump's endorsement — protects him if Trump endorses someone else</span>
+          <span class="cell-con">Not seeking Trump's endorsement is unusual and risky in SC GOP politics; could be interpreted as disloyalty</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Aligned</span>
+          <span class="cell-pro">Conservative without the national controversy Mace carries; may consolidate voters who want Trump policies without the drama</span>
+          <span class="cell-con">Lower national profile limits fundraising and earned media compared to congressional peers</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Contrast Candidate</span>
+          <span class="cell-pro">Frames himself as the adult alternative; bipartisan governing experience (Clinton + Bush White House) is a genuine differentiator</span>
+          <span class="cell-con">Contrast with Trump resonates with Democratic base but may not move persuadable Republicans or independents in SC</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Contrast Candidate</span>
+          <span class="cell-pro">Most authentically grassroots Democrat; personal story (homeless to state rep) is a powerful alternative narrative</span>
+          <span class="cell-con">Fundraising challenges; SC's political math still heavily favors Republicans statewide</span>
+        </td>
+        <td class="d-col"><span class="tag tag-oppose">Contrast Candidate</span>
+          <span class="cell-pro">"25 years of Republican one-party rule" message is a legitimate accountability argument</span>
+          <span class="cell-con">Personal controversies (arrest, rant video, party asking him to drop out) undermine his ability to deliver this message effectively</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Judicial Selection Reform</td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-support">Popular Elections for Judges</span>
+          <span class="cell-pro">Citizens directly accountable courts; removes judge selection from insider legislative process; SC is one of only two states where legislature picks judges</span>
+          <span class="cell-con">Judicial elections introduce campaign money into courts; research in other states shows elected judges rule in favor of major donors at higher rates; harms business predictability</span>
+        </td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span></td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Term Limits (Legislature)</td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-support">Core Platform</span>
+          <span class="cell-pro">Long-serving legislators become entrenched; term limits bring fresh perspectives and reduce special interest capture over time</span>
+          <span class="cell-con">Previous proposals failed because legislators must vote to limit themselves; Norman has not explained why this time would be different</span>
+        </td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="d-col"><span class="tag tag-support">12-Year Limit</span>
+          <span class="cell-pro">Specific and concrete (12 years); most detailed term limit proposal in the field; breaks up entrenched one-party dominance</span>
+          <span class="cell-con">Same structural challenge: requires legislators to vote against their own self-interest</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Open</span>
+          <span class="cell-pro">Open to reform; not wedded to current structure</span>
+          <span class="cell-con">Not a featured platform item; unclear how he'd pursue it</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Support</span>
+          <span class="cell-pro">Explicitly wants to break up long-entrenched power in Columbia</span>
+          <span class="cell-con">Lacks specifics on mechanism or timeline</span>
+        </td>
+      </tr>
+
+      <!-- ══ SOCIAL / RIGHTS ════════════════════════════════ -->
+      <tr class="category-row"><td colspan="9">Social Issues &amp; Civil Rights</td></tr>
+
+      <tr>
+        <td class="issue-label">Transgender Athletes in Women's Sports</td>
+        <td class="r-col"><span class="tag tag-support">Ban</span>
+          <span class="cell-pro">Touts keeping "biological males out of women's sports" as a key accomplishment as Lt. Gov.; popular with Republican base; SC law already prohibits it</span>
+          <span class="cell-con">Law already exists in SC; this is largely symbolic for a governor; focus may distract from issues with broader impact</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Ban</span>
+          <span class="cell-pro">Positions SC to maintain existing law and lead nationally on the issue</span>
+          <span class="cell-con">An existing law doesn't require a new governor to campaign on it unless enforcement is actually contested</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">National Advocate</span>
+          <span class="cell-pro">Has sponsored federal legislation; SC's governor could amplify the national debate and protect state law from federal challenge</span>
+          <span class="cell-con">Uses the issue to dominate media cycles — valid as policy but sometimes displaces discussion of issues that affect more SC residents daily</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Ban</span>
+          <span class="cell-pro">Consistent conservative position; popular with primary voters</span>
+          <span class="cell-con">Addressed by existing SC law; limited governing upside for a new governor beyond maintaining the status quo</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Ban</span>
+          <span class="cell-pro">Consistent; part of parental rights and values platform</span>
+          <span class="cell-con">As above — SC law already covers this</span>
+        </td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">Silence may be a political choice to avoid the issue</span>
+        </td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">Not prominently addressed</span>
+        </td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span>
+          <span class="cell-con">Not prominently addressed</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Gun Rights / 2nd Amendment</td>
+        <td class="r-col"><span class="tag tag-support">Strong</span>
+          <span class="cell-pro">SC's gun culture is deeply embedded; protecting Second Amendment rights is a core commitment for a large majority of residents</span>
+          <span class="cell-con">SC has relatively high rates of gun violence; no candidates on the right address this tension directly</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Strong</span>
+          <span class="cell-pro">Military background adds credibility to a responsible gun-rights position</span>
+          <span class="cell-con">AG experience means he has data on gun violence patterns; doesn't translate into policy proposals</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Strong</span>
+          <span class="cell-pro">Consistent congressional voting record; voters who prioritize this issue know exactly what they're getting</span>
+          <span class="cell-con">Hard-line position with no safety measures may be a general election vulnerability</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">100% Pro-Gun</span>
+          <span class="cell-pro">Explicit campaign commitment; most unambiguous position in the field on this issue</span>
+          <span class="cell-con">Absolute framing leaves no room for even uncontroversial safety measures</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Strong</span>
+          <span class="cell-pro">Consistent; base support on this issue is reliable</span>
+          <span class="cell-con">No nuance on safety measures</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Safety Focus</span>
+          <span class="cell-pro">Background checks and responsible ownership are broadly popular, including among SC gun owners</span>
+          <span class="cell-con">Even moderate gun safety positions face strong headwinds in SC; limits his coalition-building on the right</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Personal Experience</span>
+          <span class="cell-pro">Lost his brother to gun violence; his advocacy comes from lived experience, not ideology — potentially the most persuasive framing for safety measures</span>
+          <span class="cell-con">Personal narrative doesn't resolve the political difficulty of passing any gun safety legislation in SC</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Safety Focus</span>
+          <span class="cell-pro">Reasonable safety measures with broad public support; positions himself as pragmatic, not anti-gun</span>
+          <span class="cell-con">Personal controversies limit his effectiveness on any issue</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Criminal Justice Reform</td>
+        <td class="r-col"><span class="tag tag-moderate">Law &amp; Order Focus</span>
+          <span class="cell-pro">Strong law enforcement support; reduces crime and improves quality of life</span>
+          <span class="cell-con">No reform proposals; SC has one of the highest incarceration rates in the US; status quo has costs</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Prosecution-Centered</span>
+          <span class="cell-pro">AG background means deep experience with how the system actually works; brings professional credibility</span>
+          <span class="cell-con">14 years as prosecutor shapes perspective away from systemic reform; reform advocates see this as a blind spot</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Corruption Focus</span>
+          <span class="cell-pro">"Root out corruption" messaging applies to government as well as street crime — can appeal across normal lines</span>
+          <span class="cell-con">Personal legal history creates credibility challenges on this specific issue</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Law &amp; Order</span>
+          <span class="cell-pro">Consistent with his platform; supports law enforcement</span>
+          <span class="cell-con">No engagement with incarceration costs, recidivism, or workforce reintegration</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Law &amp; Order</span>
+          <span class="cell-pro">Consistent conservative platform</span>
+          <span class="cell-con">No reform proposals despite SC's documented incarceration challenges</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Reform-Minded</span>
+          <span class="cell-pro">Systemic reform reduces long-term state spending on incarceration; improves workforce participation</span>
+          <span class="cell-con">Less specific than Johnson; reform policy is politically difficult to advance in Republican legislature</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Core Platform Item</span>
+          <span class="cell-pro">~20% of SC's prison population should be in treatment, not prison — saves money AND improves lives. Personal story gives him unique authenticity. Connects criminal justice to mental health spending.</span>
+          <span class="cell-con">Legislative path for criminal justice reform in SC is narrow without strong Republican support; would require bipartisan coalition-building</span>
+        </td>
+        <td class="d-col"><span class="tag tag-support">Reform</span>
+          <span class="cell-pro">Justice reform framing addresses racial disparities in SC's system; connects to economic justice platform</span>
+          <span class="cell-con">Personal controversies (the arrest specifically) are a credibility problem on criminal justice messaging</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="issue-label">Tort Reform
+          <span class="issue-note">SC business community has pushed for changes</span>
+        </td>
+        <td class="r-col"><span class="tag tag-moderate">Support Reform</span>
+          <span class="cell-pro">Reduces insurance costs for businesses; reduces frivolous lawsuits that burden courts and raise liability costs</span>
+          <span class="cell-con">Tort reform without specific insurance premium relief requirements may just increase business profits without consumer benefit</span>
+        </td>
+        <td class="r-col"><span class="tag tag-support">Reform the System</span>
+          <span class="cell-pro">Calls current system "exploitable"; reform would reduce litigation costs that raise prices for consumers and businesses alike</span>
+          <span class="cell-con">AG's institutional perspective favors prosecution; tort reform can limit legitimate consumer and worker claims</span>
+        </td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-unknown">N/S</span></td>
+        <td class="r-col"><span class="tag tag-support">Loser Pays</span>
+          <span class="cell-pro">"Loser pays" deters frivolous lawsuits; reduces costs and delays in the legal system; used effectively in other states</span>
+          <span class="cell-con">Loser-pays also deters legitimate but risky claims by individuals against well-funded defendants — can disadvantage workers and consumers</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Reform With Conditions</span>
+          <span class="cell-pro">Open to reform if it actually lowers insurance premiums — the stated goal; pragmatic test for whether reform achieves its purpose</span>
+          <span class="cell-con">Conditional support may be seen as blocking needed reform</span>
+        </td>
+        <td class="d-col"><span class="tag tag-moderate">Cautious</span>
+          <span class="cell-pro">Correctly notes that past tort reform in SC shifted, rather than solved, the insurance cost problem; follows the evidence</span>
+          <span class="cell-con">Skepticism without a counter-proposal doesn't help businesses facing legitimate frivolous lawsuit burden</span>
+        </td>
+        <td class="d-col"><span class="tag tag-unknown">N/S</span></td>
+      </tr>
+
+    </tbody>
+  </table>
+  </div><!-- end scroll -->
+</div><!-- end table-outer -->
+
+<!-- ═══ GLOSSARY ════════════════════════════════════════════════════════ -->
+<div class="glossary">
+  <h2>SC-Specific Background Every Voter Should Know</h2>
+  <div class="gloss-grid">
+    <div class="gloss-item"><strong>SC INCOME TAX — THE MATH</strong>SC's income tax generates roughly 40% of general fund revenue. A phased elimination over 10–15 years is financially possible if growth offsets the decline; an immediate cut is not. Every candidate who campaigns on elimination is talking about a multi-decade project, not a first-term achievement.</div>
+    <div class="gloss-item"><strong>GOVERNOR'S ACTUAL POWER</strong>SC's governor is constitutionally weaker than in most states. The legislature controls most appropriations, many agency appointments, and even some executive hiring. Promises to "fix" roads, schools, or spending often require legislative buy-in that campaign rhetoric never discusses.</div>
+    <div class="gloss-item"><strong>MEDICAID — THE $16B QUESTION</strong>By refusing Medicaid expansion since 2013, SC has declined an estimated $16–18 billion in federal matching funds. The federal government pays 90 cents of every expansion dollar. Forty states, including Arkansas, Louisiana, and other GOP-led states, have accepted expansion.</div>
+    <div class="gloss-item"><strong>SC ROAD FUNDING</strong>SC maintains more lane miles per capita than almost any other state — a legacy of extreme centralization. The funding formula is controlled by the legislature and has resisted reform for decades. Every candidate's road promise requires legislative action they may not be able to deliver.</div>
+    <div class="gloss-item"><strong>FOREIGN MANUFACTURING BASE</strong>SC hosts BMW (Spartanburg), Volvo (Berkeley County), Michelin (Greenville), and hundreds of supplier companies. Foreign direct investment in SC exceeds $50 billion. "Restrict foreign companies" rhetoric needs careful surgical limits to avoid harming the state's largest employers.</div>
+    <div class="gloss-item"><strong>PRIMARY RUNOFF RULE</strong>If no Republican tops 50% on June 9, the top two candidates face a head-to-head runoff on June 23. With 5–7 serious candidates splitting the vote, a runoff is very likely. The runoff electorate is typically smaller and more conservative — this shapes how candidates are campaigning.</div>
+    <div class="gloss-item"><strong>ACE BASIN</strong>One of the largest undeveloped estuaries on the East Coast, spanning four SC counties. Major new water consumption upstream is a legitimate ecological and agricultural concern that Kimbrell and Wilson have begun to address specifically.</div>
+    <div class="gloss-item"><strong>S.1095 — WHAT IT ACTUALLY DOES</strong>The Unborn Child Protection Act would ban abortion from clinical detection, remove rape/incest exceptions, classify abortion medication as Schedule IV controlled substances, impose up to 20 years/$100K on doctors, and up to 2 years on women who obtain illegal abortions. Most GOP candidates have said they'd veto it — but that position should be confirmed, not assumed.</div>
+    <div class="gloss-item"><strong>SC OB-GYN SHORTAGE</strong>SC already has a severe OB-GYN and maternal health physician shortage, particularly in rural areas. Medical associations cite abortion restrictions as a factor in physician recruitment and retention. This is a real healthcare workforce issue that intersects with the abortion debate in ways campaign messaging on both sides often ignores.</div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <strong>Sources:</strong> Campaign announcements, SC Republican Party debates (Newberry April 20; Charleston April 21–22, 2026), Post and Courier, SC Daily Gazette, WISTV, WIS, Fox Carolina, CNN, AP, Live5News, WCSC, Ballotpedia, SC Policy Council (Feb. 2026 poll). Candidate positions current as of May 2026 and may evolve after the June 9 primary.
+  <br><br>
+  <strong>Note on minor candidates:</strong> Rom Reddy (R) and Justin Bennett (D) are on primary ballots but have limited public platform detail. Reddy notably opposes all data center development — the only candidate with that position. Green Party candidate Walid Hakim is in the general election only.
+  <br><br>
+  <strong>A note on balance:</strong> Every cell in this guide presents both the affirmative case for a candidate's position and genuine concerns about it. Neither party has a monopoly on good ideas or on blind spots. Readers are encouraged to weigh the tradeoffs themselves.
+</footer>
+
+<script>
+function filterCols(party, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('active','r-active','d-active');
+  });
+  const rCols = document.querySelectorAll('.r-col');
+  const dCols = document.querySelectorAll('.d-col');
+  if (party === 'all') {
+    btn.classList.add('active');
+    [...rCols,...dCols].forEach(c => c.style.display = '');
+  } else if (party === 'r') {
+    btn.classList.add('r-active');
+    rCols.forEach(c => c.style.display = '');
+    dCols.forEach(c => c.style.display = 'none');
+  } else if (party === 'd') {
+    btn.classList.add('d-active');
+    rCols.forEach(c => c.style.display = 'none');
+    dCols.forEach(c => c.style.display = '');
+  }
+}
+</script>
+</body>
+</html>
