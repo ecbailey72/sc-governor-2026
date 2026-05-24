@@ -249,10 +249,11 @@
     min-width: 160px;
     position: sticky;
     top: 0;
-    z-index: 20;
+    z-index: 100;
     line-height: 1.4;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   }
-  thead th:first-child { min-width: 160px; background: #111; }
+  thead th:first-child { min-width: 160px; background: #111; z-index: 110; position: sticky; top: 0; left: 0; }
   thead th.r-col { background: #5c1818; }
   thead th.d-col { background: #1a2e4a; }
   thead th small { font-weight: 400; font-size: 11px; opacity: .8; display: block; margin-top: 3px; letter-spacing: .03em; }
@@ -300,6 +301,9 @@
 
   td.r-col { background: #fdfafa; }
   td.d-col { background: #f9fbfd; }
+
+  /* Ensure no cell is ever transparent — prevents bleed-through under sticky header */
+  tbody td { background-color: #fff; }
 
   /* stance tags */
   .tag {
