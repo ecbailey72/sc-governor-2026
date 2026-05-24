@@ -35,7 +35,6 @@
     font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
     font-size: 14px;
     line-height: 1.6;
-    overflow-x: auto;
   }
 
   /* ─── MASTHEAD ─────────────────────────────────────────── */
@@ -104,10 +103,9 @@
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
-    position: sticky;
-    top: 0;
-    z-index: 30;
     box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    border-radius: 4px;
+    margin: 0 24px 12px;
   }
   .controls-label {
     font-family: Consolas, 'Courier New', Courier, monospace;
@@ -225,7 +223,7 @@
     padding-left: 19px;
     margin-bottom: 18px;
   }
-  .table-scroll { overflow-x: visible; overflow-y: visible; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
   table {
     width: 100%;
@@ -247,13 +245,9 @@
     border-right: 1px solid rgba(255,255,255,.1);
     white-space: normal;
     min-width: 160px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
     line-height: 1.4;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   }
-  thead th:first-child { min-width: 170px; background: #111; z-index: 200; position: sticky; top: 0; left: 0; box-shadow: 3px 3px 6px rgba(0,0,0,0.4); }
+  thead th:first-child { min-width: 170px; background: #111; }
   thead th.r-col { background: #5c1818; }
   thead th.d-col { background: #1a2e4a; }
   thead th small { font-weight: 400; font-size: 11px; opacity: .8; display: block; margin-top: 3px; letter-spacing: .03em; }
@@ -268,9 +262,6 @@
     padding: 10px 14px;
     border-top: 2px solid var(--rule);
     letter-spacing: .02em;
-    position: sticky;
-    left: 0;
-    z-index: 15;
   }
 
   tbody tr:not(.category-row) td {
@@ -291,9 +282,6 @@
     border-right: 2px solid var(--rule) !important;
     min-width: 170px;
     vertical-align: top;
-    position: sticky;
-    left: 0;
-    z-index: 15;
     box-shadow: 3px 0 6px rgba(0,0,0,0.15);
   }
   td.issue-label .issue-note {
@@ -396,13 +384,7 @@
   </div>
 </div>
 
-<!-- ═══ CONTROLS ════════════════════════════════════════════════════════ -->
-<div class="controls">
-  <span class="controls-label">Show:</span>
-  <button class="filter-btn active" onclick="filterCols('all',this)">All Candidates</button>
-  <button class="filter-btn" onclick="filterCols('r',this)">Republicans Only</button>
-  <button class="filter-btn" onclick="filterCols('d',this)">Democrats Only</button>
-</div>
+
 
 <!-- ═══ INTRO ════════════════════════════════════════════════════════════ -->
 <div class="intro">
@@ -529,6 +511,13 @@
 </div><!-- end context-section -->
 
 <!-- ═══ MAIN COMPARISON TABLE ════════════════════════════════════════════ -->
+<!-- ═══ CONTROLS ════════════════════════════════════════════════════════ -->
+<div class="controls">
+  <span class="controls-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterCols('all',this)">All Candidates</button>
+  <button class="filter-btn" onclick="filterCols('r',this)">Republicans Only</button>
+  <button class="filter-btn" onclick="filterCols('d',this)">Democrats Only</button>
+</div>
 <div class="table-outer">
   <h2>Full Candidate Comparison by Issue</h2>
   <p class="table-note">Positions sourced from campaign announcements, debates (Newberry April 20; Charleston April 21–22, 2026), candidate interviews, and legislative records. Each cell shows the candidate's position plus key + upsides and − concerns. "N/S" = Not Stated publicly. Scroll right if needed.</p>
@@ -1291,6 +1280,79 @@
 </footer>
 
 <script>
+// ── Frozen header row + frozen left column via JS ──────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var tableScroll = document.querySelector('.table-scroll');
+  var table = document.querySelector('#mainTable');
+  var thead = table.querySelector('thead');
+  var theadHeight = 0;
+
+  // Create floating clone of thead for vertical stickiness
+  var floatHead = thead.cloneNode(true);
+  floatHead.style.cssText = 'position:fixed;top:0;left:0;overflow:hidden;pointer-events:none;z-index:200;visibility:hidden;';
+  floatHead.id = 'floatingHead';
+  document.body.appendChild(floatHead);
+
+  function syncHead() {
+    var rect = tableScroll.getBoundingClientRect();
+    var theadRect = thead.getBoundingClientRect();
+    theadHeight = floatHead.offsetHeight;
+
+    if (theadRect.top < 0 && rect.bottom > theadHeight) {
+      // Table is scrolled past top — show floating header
+      floatHead.style.visibility = 'visible';
+      floatHead.style.width = tableScroll.offsetWidth + 'px';
+      floatHead.style.left = rect.left + 'px';
+      // Sync horizontal scroll position
+      floatHead.scrollLeft = tableScroll.scrollLeft;
+      // Sync column widths
+      var origCells = thead.querySelectorAll('th');
+      var floatCells = floatHead.querySelectorAll('th');
+      origCells.forEach(function(th, i) {
+        floatCells[i].style.width = th.offsetWidth + 'px';
+        floatCells[i].style.minWidth = th.offsetWidth + 'px';
+      });
+    } else {
+      floatHead.style.visibility = 'hidden';
+    }
+
+    // Sync left column: make first td of each row overlay correctly
+    // by tracking horizontal scroll
+    var scrollLeft = tableScroll.scrollLeft;
+    var firstCells = table.querySelectorAll('td.issue-label, tr.category-row td:first-child');
+    firstCells.forEach(function(td) {
+      td.style.transform = 'translateX(' + scrollLeft + 'px)';
+      td.style.position = 'relative';
+      td.style.zIndex = '15';
+      td.style.background = window.getComputedStyle(td).backgroundColor;
+    });
+
+    // Also move first th to follow scroll
+    var firstTh = thead.querySelector('th:first-child');
+    if (firstTh) {
+      firstTh.style.transform = 'translateX(' + scrollLeft + 'px)';
+      firstTh.style.position = 'relative';
+      firstTh.style.zIndex = '210';
+    }
+    var floatFirstTh = floatHead.querySelector('th:first-child');
+    if (floatFirstTh) {
+      floatFirstTh.style.transform = 'translateX(0px)';
+    }
+  }
+
+  window.addEventListener('scroll', syncHead);
+  tableScroll.addEventListener('scroll', syncHead);
+  window.addEventListener('resize', syncHead);
+  syncHead();
+
+  // Re-sync after filter buttons change visibility
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setTimeout(syncHead, 50);
+    });
+  });
+});
+
 function filterCols(party, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.classList.remove('active','r-active','d-active');
